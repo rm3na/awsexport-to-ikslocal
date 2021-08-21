@@ -40,7 +40,15 @@ variable "s3folder" {
   default = "vms/"
 }
 
+variable "AWS_ACCESS_KEY_ID" {
+  type = string
+  description = "Key"
+}
 
+variable "AWS_SECRET_ACCESS_KEY" {
+  type = string
+  description = "Secret"
+}
 
 data "template_file" "log_name" {
   template = "${path.module}/output.log"
@@ -54,6 +62,10 @@ data "local_file" "create_s3export" {
 
 resource "null_resource" "create-s3export" {
   provisioner "local-exec" {
+                     environment {
+                    AWS_ACCESS_KEY_ID = var.AWS_ACCESS_KEY_ID
+                    AWS_SECRET_ACCESS_KEY = var.AWS_SECRET_ACCESS_KEY
+                  }
                  command = "aws ec2 create-instance-export-task --instance-id ${var.instanceid} --target-environment vmware --export-to-s3-task DiskImageFormat=vmdk,ContainerFormat=ova,S3Bucket=${var.s3bucket},S3Prefix=${var.s3folder} > ${data.template_file.log_name.rendered}"
   }
 }
