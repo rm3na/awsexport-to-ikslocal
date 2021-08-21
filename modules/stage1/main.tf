@@ -105,7 +105,7 @@ locals {
 #}
 
 output "exports3_url" {
-  value = "${local.s3out}"
+  value = "https://${var.s3bucket}.s3.us-west-2.amazonaws.com/${local.s3out}"
 }
 
 output "exports3_task" {
