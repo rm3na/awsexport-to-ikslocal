@@ -8,12 +8,6 @@ terraform {
     }
   }
     
- backend "s3" {
-    bucket = "n1poc-bucket"
-    key    = "logs/"
-    region = "us-west-2"
-  }
-
 
   required_providers {
     aws = {
@@ -62,26 +56,21 @@ variable "AWS_SECRET_ACCESS_KEY" {
 #  template = "${path.module}/output.log"
 #}
 
-data "terraform_remote_state" "log_name" {
-  backend = "s3"
-  config = {
-    bucket = ${var.s3bucket}
-    key    = "logs/output.log"
-    region = "us-west-2"
-    access_key = var.AWS_ACCESS_KEY_ID
-    secret_key = var.AWS_SECRET_ACCESS_KEY
-  }
+data "aws_s3_bucket_object" "log_name" {
+  bucket = "n1poc-bucket"
+  key    = "logs/output.log"
 }
 
+
 data "local_file" "create_s3export" {
-  filename = "${data.template_file.log_name.rendered}"
+  filename = "${data.aws_s3_bucket_object.log_name.rendered}"
   depends_on = [null_resource.create-s3export]
 }
 
 
 resource "null_resource" "create-s3export" {
   provisioner "local-exec" {
-      command = "aws ec2 create-instance-export-task --instance-id ${var.instanceid} --target-environment vmware --export-to-s3-task DiskImageFormat=vmdk,ContainerFormat=ova,S3Bucket=${var.s3bucket},S3Prefix=${var.s3folder} > ${data.template_file.log_name.rendered}"           
+      command = "aws ec2 create-instance-export-task --instance-id ${var.instanceid} --target-environment vmware --export-to-s3-task DiskImageFormat=vmdk,ContainerFormat=ova,S3Bucket=${var.s3bucket},S3Prefix=${var.s3folder} > ${data.aws_s3_bucket_object.log_name.rendered}"           
       environment = {
                     AWS_ACCESS_KEY_ID = var.AWS_ACCESS_KEY_ID
                     AWS_SECRET_ACCESS_KEY = var.AWS_SECRET_ACCESS_KEY
