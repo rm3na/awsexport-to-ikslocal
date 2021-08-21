@@ -7,6 +7,14 @@ terraform {
       name = "awsexport-to-istlocal"
     }
   }
+    
+ backend "s3" {
+    bucket = "n1poc-bucket"
+    key    = "logs/"
+    region = "us-west-2"
+  }
+
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -50,8 +58,19 @@ variable "AWS_SECRET_ACCESS_KEY" {
   description = "Secret"
 }
 
-data "template_file" "log_name" {
-  template = "${path.module}/output.log"
+#data "template_file" "log_name" {
+#  template = "${path.module}/output.log"
+#}
+
+data "terraform_remote_state" "log_name" {
+  backend = "s3"
+  config = {
+    bucket = ${var.s3bucket}
+    key    = "logs/output.log"
+    region = "us-west-2"
+    access_key = var.AWS_ACCESS_KEY_ID
+    secret_key = var.AWS_SECRET_ACCESS_KEY
+  }
 }
 
 data "local_file" "create_s3export" {
