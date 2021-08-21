@@ -1,4 +1,4 @@
-# awsexport-to-ikslocal
+# awsexport-to-istlocal
 Export EC2 Instance to S3 Bucket for Intersight Consumption using AWS CLI-TerraformCloud-Terraform OSS
 
 
