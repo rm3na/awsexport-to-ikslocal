@@ -80,7 +80,7 @@ resource "null_resource" "create-s3export" {
 }
 
 locals {
-  s3info = jsondecode("${data.aws_s3_bucket_object.log_name.content}")
+  s3info = jsondecode("${data.aws_s3_bucket_object.log_name}")
   s3task = [for Task in local.s3info.ExportTasks : Task.ExportTaskId]
   s3out = [for Task in local.s3info.ExportTasks : Task.ExportToS3Task.S3Key]
   depends_on = [null_resource.create-s3export]
