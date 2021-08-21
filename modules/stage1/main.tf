@@ -77,6 +77,8 @@ module "create_s3export" {
                   }
   command = "aws ec2 create-instance-export-task --instance-id ${var.instanceid} --target-environment vmware --export-to-s3-task DiskImageFormat=vmdk,ContainerFormat=ova,S3Bucket=${var.s3bucket},S3Prefix=${var.s3folder}"             
 }
+
+
     
 #resource "null_resource" "create-s3export" {
 #  provisioner "local-exec" {
@@ -90,7 +92,8 @@ module "create_s3export" {
 #}
 
 locals {
-  s3info = jsondecode("${create_s3export.stdout}")
+  s3data = module.create_s3export.stdout  
+  s3info = jsondecode("${local.s3data}")
   s3task = [for Task in local.s3info.ExportTasks : Task.ExportTaskId]
   s3out = [for Task in local.s3info.ExportTasks : Task.ExportToS3Task.S3Key]
   depends_on = [create_s3export]
