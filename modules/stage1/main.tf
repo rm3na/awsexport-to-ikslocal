@@ -94,8 +94,8 @@ module "create_s3export" {
 locals {
   s3data = module.create_s3export.stdout  
   s3info = jsondecode("${local.s3data}")
-  s3task = [for Task in local.s3info.ExportTasks : Task.ExportTaskId]
-  s3out = [for Task in local.s3info.ExportTasks : Task.ExportToS3Task.S3Key]
+  s3task = local.s3info.ExportTask.ExportTaskId
+  s3out = local.s3info.ExportTask.ExportToS3Task.S3Key
   depends_on = [module.create_s3export]
 }
 
