@@ -27,7 +27,7 @@ provider "aws" {
 variable "instanceid" {
   type = string
   description = "Instance ID to export"
-  default = "i-051bcd2e285390149"
+  default = "i-0c7b6ee0361b0dc2c"
 }
 
 variable "s3bucket" {
