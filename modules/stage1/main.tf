@@ -62,10 +62,10 @@ data "aws_s3_bucket_object" "log_name" {
 }
 
 
-data "local_file" "create_s3export" {
-  filename = "${data.aws_s3_bucket_object.log_name}"
-  depends_on = [null_resource.create-s3export]
-}
+#data "local_file" "create_s3export" {
+#  filename = "${data.aws_s3_bucket_object.log_name}"
+#  depends_on = [null_resource.create-s3export]
+#}
 
 
 resource "null_resource" "create-s3export" {
