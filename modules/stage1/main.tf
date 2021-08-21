@@ -56,28 +56,38 @@ variable "AWS_SECRET_ACCESS_KEY" {
 #  template = "${path.module}/output.log"
 #}
 
-data "aws_s3_bucket_object" "log_name" {
-  bucket = "n1poc-bucket"
-  key    = "logs/output.log"
-}
-
-
-#data "local_file" "create_s3export" {
-#  filename = "${data.aws_s3_bucket_object.log_name}"
-#  depends_on = [null_resource.create-s3export]
+#data "aws_s3_bucket_object" "log_name" {
+#  bucket = "n1poc-bucket"
+#  key    = "logs/output.log"
 #}
 
 
-resource "null_resource" "create-s3export" {
-  provisioner "local-exec" {
-      command = "aws ec2 create-instance-export-task --instance-id ${var.instanceid} --target-environment vmware --export-to-s3-task DiskImageFormat=vmdk,ContainerFormat=ova,S3Bucket=${var.s3bucket},S3Prefix=${var.s3folder} > ${data.aws_s3_bucket_object.log_name.body}"           
-      environment = {
+data "local_file" "create_s3export" {
+  value = create_s3export.stdout
+  depends_on = [create_s3export]
+}
+
+module "create_s3export" {
+  source  = "matti/resource/shell"
+  version = "1.3.0"
+  # insert the 4 required variables here
+  environment = {
                     AWS_ACCESS_KEY_ID = var.AWS_ACCESS_KEY_ID
                     AWS_SECRET_ACCESS_KEY = var.AWS_SECRET_ACCESS_KEY
                   }
-                 
-  }
+  command = "aws ec2 create-instance-export-task --instance-id ${var.instanceid} --target-environment vmware --export-to-s3-task DiskImageFormat=vmdk,ContainerFormat=ova,S3Bucket=${var.s3bucket},S3Prefix=${var.s3folder}"             
 }
+    
+#resource "null_resource" "create-s3export" {
+#  provisioner "local-exec" {
+#      command = "aws ec2 create-instance-export-task --instance-id ${var.instanceid} --target-environment vmware --export-to-s3-task DiskImageFormat=vmdk,ContainerFormat=ova,S3Bucket=${var.s3bucket},S3Prefix=${var.s3folder} > ${data.aws_s3_bucket_object.log_name.body}"           
+#      environment = {
+#                    AWS_ACCESS_KEY_ID = var.AWS_ACCESS_KEY_ID
+#                    AWS_SECRET_ACCESS_KEY = var.AWS_SECRET_ACCESS_KEY
+#                  }
+#                 
+#  }
+#}
 
 locals {
   s3info = jsondecode("${data.aws_s3_bucket_object.log_name.body}")
