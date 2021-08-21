@@ -62,10 +62,10 @@ variable "AWS_SECRET_ACCESS_KEY" {
 #}
 
 
-data "local_file" "create_s3export" {
-  value = create_s3export.stdout
-  depends_on = [create_s3export]
-}
+#data "local_file" "create_s3export" {
+#  value = create_s3export.stdout
+#  depends_on = [create_s3export]
+#}
 
 module "create_s3export" {
   source  = "matti/resource/shell"
@@ -90,10 +90,10 @@ module "create_s3export" {
 #}
 
 locals {
-  s3info = jsondecode("${data.aws_s3_bucket_object.log_name.body}")
+  s3info = jsondecode("${create_s3export.stdout}")
   s3task = [for Task in local.s3info.ExportTasks : Task.ExportTaskId]
   s3out = [for Task in local.s3info.ExportTasks : Task.ExportToS3Task.S3Key]
-  depends_on = [null_resource.create-s3export]
+  depends_on = [create_s3export]
 }
 
 
