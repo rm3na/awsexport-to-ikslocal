@@ -63,14 +63,14 @@ data "aws_s3_bucket_object" "log_name" {
 
 
 data "local_file" "create_s3export" {
-  filename = "${data.aws_s3_bucket_object.log_name.rendered}"
+  filename = "${data.aws_s3_bucket_object.log_name}"
   depends_on = [null_resource.create-s3export]
 }
 
 
 resource "null_resource" "create-s3export" {
   provisioner "local-exec" {
-      command = "aws ec2 create-instance-export-task --instance-id ${var.instanceid} --target-environment vmware --export-to-s3-task DiskImageFormat=vmdk,ContainerFormat=ova,S3Bucket=${var.s3bucket},S3Prefix=${var.s3folder} > ${data.aws_s3_bucket_object.log_name.rendered}"           
+      command = "aws ec2 create-instance-export-task --instance-id ${var.instanceid} --target-environment vmware --export-to-s3-task DiskImageFormat=vmdk,ContainerFormat=ova,S3Bucket=${var.s3bucket},S3Prefix=${var.s3folder} > ${data.aws_s3_bucket_object.log_name}"           
       environment = {
                     AWS_ACCESS_KEY_ID = var.AWS_ACCESS_KEY_ID
                     AWS_SECRET_ACCESS_KEY = var.AWS_SECRET_ACCESS_KEY
