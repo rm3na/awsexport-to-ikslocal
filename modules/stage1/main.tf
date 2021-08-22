@@ -110,6 +110,10 @@ locals {
 #output "exports3_info" {
 #  value = "${data.local_file.create_s3export.content}"
 #}
+      
+output "stdout" {
+  value = module.create_s3export.stdout
+}
 
 output "exports3_url" {
   value = "https://${var.s3bucket}.s3.${var.AWS_DEFAULT_REGION}.amazonaws.com/${local.s3out}"
