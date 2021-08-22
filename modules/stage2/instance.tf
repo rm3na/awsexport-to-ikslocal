@@ -67,7 +67,7 @@ ovf_deploy {
     #ovf_network_map = {
     #  "sddc-cgw-network-1" = data.vsphere_network.network.id
   #  }
-      network_interface {}
+    #  network_interface {}
     }
   }
 
