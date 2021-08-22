@@ -36,10 +36,10 @@ variable "network_name" {
 }
 
 // The name of the template to use when cloning.
-variable "template_name" {
-  type = string
-  description = "Name of the template"
-}
+#variable "template_name" {
+#  type = string
+#  description = "Name of the template"
+#}
 
 
 // The virtual machine cpu
@@ -71,7 +71,7 @@ variable "vm_count" {
   default = 1
 }
 
-variable "vm_domain" {
-  type = string
-  description = "Domain Name for the virtual machine"
-}
+#variable "vm_domain" {
+#  type = string
+#  description = "Domain Name for the virtual machine"
+#}
