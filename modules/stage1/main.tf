@@ -52,6 +52,12 @@ variable "AWS_SECRET_ACCESS_KEY" {
   description = "Secret"
 }
 
+variable "AWS_DEFAULT_REGION" {
+  type = string
+  description = "Region for instance discovery"
+  default = "us-west-2"
+}
+
 #data "template_file" "log_name" {
 #  template = "${path.module}/output.log"
 #}
@@ -74,6 +80,7 @@ module "create_s3export" {
   environment = {
                     AWS_ACCESS_KEY_ID = var.AWS_ACCESS_KEY_ID
                     AWS_SECRET_ACCESS_KEY = var.AWS_SECRET_ACCESS_KEY
+                    AWS_DEFAULT_REGION=var.AWS_DEFAULT_REGION
                   }
   command = "aws ec2 create-instance-export-task --instance-id ${var.instanceid} --target-environment vmware --export-to-s3-task DiskImageFormat=vmdk,ContainerFormat=ova,S3Bucket=${var.s3bucket},S3Prefix=${var.s3folder}"             
 }
