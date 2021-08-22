@@ -11,8 +11,20 @@ data "terraform_remote_state" "ovaurl" {
   }
 }
 
+variable "vsphere_host" {
+  type = string
+  description = "Host IP to import"
+  default = "11.11.11.143"
+}
+
+
 data "vsphere_datacenter" "dc" {
   name = var.datacenter
+}
+
+data "vsphere_host" "host" {
+  name          = var.vsphere_host
+  datacenter_id = data.vsphere_datacenter.dc.id
 }
 
 data "vsphere_datastore" "datastore" {
@@ -56,7 +68,7 @@ resource "vsphere_virtual_machine" "vm_deploy" {
   resource_pool_id = data.vsphere_resource_pool.pool.id
   datastore_id = data.vsphere_datastore.datastore.id
   datacenter_id = data.vsphere_datacenter.dc.id
- # host_system_id = data.vsphere_host.host.id
+  host_system_id = data.vsphere_host.host.id
   folder           = "AWS_IMPORTS"
   wait_for_guest_net_timeout = 0
   wait_for_guest_ip_timeout = 0
