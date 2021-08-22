@@ -62,7 +62,7 @@ resource "vsphere_virtual_machine" "vm_deploy" {
   wait_for_guest_ip_timeout = 0
 
 ovf_deploy {
-    remote_ovf_url = data.terraform_remote_state.ovaurl.exports3_url
+    remote_ovf_url = data.terraform_remote_state.ovaurl.outputs.exports3_url
     disk_provisioning = "thin"
     #ovf_network_map = {
     #  "sddc-cgw-network-1" = data.vsphere_network.network.id
