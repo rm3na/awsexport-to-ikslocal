@@ -30,10 +30,10 @@ data "vsphere_network" "network" {
   datacenter_id = data.vsphere_datacenter.dc.id
 }
 
-data "vsphere_virtual_machine" "template" {
-  name          = var.template_name
-  datacenter_id = data.vsphere_datacenter.dc.id
-}
+#data "vsphere_virtual_machine" "template" {
+#  name          = var.template_name
+#  datacenter_id = data.vsphere_datacenter.dc.id
+#}
 
 resource "random_string" "folder_name_prefix" {
   length    = 10
@@ -62,7 +62,7 @@ resource "vsphere_virtual_machine" "vm_deploy" {
   wait_for_guest_ip_timeout = 0
 
 ovf_deploy {
-    remote_ovf_url = terraform_remote_state.ovaurl.exports3_url
+    remote_ovf_url = data.terraform_remote_state.ovaurl.exports3_url
     disk_provisioning = "thin"
     #ovf_network_map = {
     #  "sddc-cgw-network-1" = data.vsphere_network.network.id
